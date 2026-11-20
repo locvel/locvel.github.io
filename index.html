@@ -1,72 +1,925 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Locvel — Open source, privacy-first, local-first software</title>
-<meta name="description" content="Locvel builds open source, privacy-first, local-first software. First project: Voite, a free offline voice recorder with on-device transcription.">
-<style>
-  body { margin: 0; background: #0a0a0a; color: #e5e5e5; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; }
-  main { max-width: 720px; margin: 0 auto; padding: 64px 24px; }
-  h1 { font-size: 40px; letter-spacing: 4px; color: #2dd4bf; margin: 0; }
-  .tagline { font-size: 20px; color: #a3a3a3; margin: 8px 0 40px; }
-  h2 { font-size: 22px; color: #f5f5f5; border-bottom: 1px solid #262626; padding-bottom: 8px; margin-top: 48px; }
-  a { color: #2dd4bf; }
-  a:hover { color: #5eead4; }
-  .card { border: 1px solid #262626; border-radius: 12px; padding: 20px 24px; margin: 16px 0; }
-  .card h3 { margin: 0 0 8px; font-size: 20px; }
-  .card h3 a { text-decoration: none; }
-  .card p { margin: 0 0 12px; color: #a3a3a3; }
-  .voite a { color: #fb923c; }
-  .voite a:hover { color: #fdba74; }
-  table { border-collapse: collapse; }
-  td { padding: 6px 16px 6px 0; vertical-align: top; }
-  td:first-child { color: #a3a3a3; white-space: nowrap; }
-  footer { margin-top: 64px; color: #737373; font-size: 14px; border-top: 1px solid #262626; padding-top: 16px; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Locvel — Privacy-first, local-first software</title>
+  <meta name="description" content="Building open source tools that respect your privacy. Data stays on your device, always.">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --text: #f5f5f5;
+      --text-dim: #a3a3a3;
+      --accent: #2dd4bf;
+      --accent-hover: #5eead4;
+      --voite: #fb923c;
+      --voite-hover: #fdba74;
+      --border: #262626;
+      --card-bg: #141414;
+      --glass: rgba(20, 20, 20, 0.8);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 2rem;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(45, 212, 191, 0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 50%, rgba(251, 146, 60, 0.05) 0%, transparent 40%);
+      animation: breathe 8s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .hero-content {
+      max-width: 900px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-container {
+      margin: 0 auto 3rem;
+      width: 120px;
+      height: 120px;
+      position: relative;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .logo-glow {
+      position: absolute;
+      inset: -20px;
+      background: radial-gradient(circle, rgba(45, 212, 191, 0.3) 0%, transparent 70%);
+      filter: blur(30px);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.1); }
+    }
+
+    .logo-svg {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tagline {
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+      font-weight: 300;
+      animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    }
+
+    .etymology {
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 3rem;
+      font-weight: 500;
+      animation: fadeInUp 0.8s ease-out 0.4s backwards;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease-out 0.6s backwards;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    .btn:hover::before {
+      transform: translateX(100%);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(45, 212, 191, 0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* Projects Section */
+    .section {
+      padding: 8rem 2rem;
+      position: relative;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      margin-bottom: 4rem;
+      text-align: center;
+      letter-spacing: -0.02em;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .project-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.5rem;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 0%, rgba(45, 212, 191, 0.05) 100%);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .project-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--accent);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .project-card:hover::before {
+      opacity: 1;
+    }
+
+    .project-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--voite) 0%, var(--voite-hover) 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .project-card:hover .project-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .project-card h3 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .project-card p {
+      color: var(--text-dim);
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .project-link {
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .project-link:hover {
+      background: rgba(45, 212, 191, 0.1);
+      border-color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    /* Features Section */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature-card {
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .feature-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, rgba(45, 212, 191, 0.2) 0%, rgba(45, 212, 191, 0.05) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .feature-card p {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Stats Section */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin: 4rem 0;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(45, 212, 191, 0.05);
+      border: 1px solid rgba(45, 212, 191, 0.2);
+      border-radius: 16px;
+      transition: all 0.4s;
+    }
+
+    .stat-card:hover {
+      transform: scale(1.05);
+      background: rgba(45, 212, 191, 0.1);
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-label {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Footer */
+    footer {
+      padding: 4rem 2rem 2rem;
+      border-top: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+    }
+
+    .footer-section h4 {
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+      font-size: 1.1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .footer-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .social-link {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .social-link:hover {
+      background: var(--accent);
+      color: var(--bg);
+      transform: translateY(-4px) rotate(5deg);
+      border-color: var(--accent);
+    }
+
+    .copyright {
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+      40% { transform: translateX(-50%) translateY(-10px); }
+      60% { transform: translateX(-50%) translateY(-5px); }
+    }
+
+    .scroll-indicator svg {
+      width: 24px;
+      height: 24px;
+      opacity: 0.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero {
+        min-height: 90vh;
+      }
+
+      .section {
+        padding: 4rem 1.5rem;
+      }
+
+      .cta-group {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .projects-grid,
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Smooth Entrance Animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+
+    /* Selection */
+    ::selection {
+      background: var(--accent);
+      color: var(--bg);
+    }
+  </style>
 </head>
 <body>
-<main>
-  <h1>LOCVEL</h1>
-  <p class="tagline">Open source, privacy-first, local-first software.<br><strong>loc</strong> — local. <strong>vel</strong> — veil.</p>
 
-  <h2>Projects</h2>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="logo-container">
+        <div class="logo-glow"></div>
+        <svg class="logo-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#2dd4bf;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#5eead4;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <!-- Shield Shape -->
+          <path d="M60 10 L100 30 L100 70 C100 90, 80 105, 60 110 C40 105, 20 90, 20 70 L20 30 Z" 
+                fill="url(#logoGradient)" opacity="0.9"/>
+          <!-- Lock Icon -->
+          <circle cx="60" cy="55" r="8" fill="#0a0a0a"/>
+          <rect x="52" y="55" width="16" height="20" rx="2" fill="#0a0a0a"/>
+          <circle cx="60" cy="65" r="3" fill="url(#logoGradient)"/>
+        </svg>
+      </div>
+      
+      <h1>LOCVEL</h1>
+      <p class="tagline">Open source, privacy-first, local-first software</p>
+      <p class="etymology"><strong>loc</strong> — local. <strong>vel</strong> — veil.</p>
+      
+      <div class="cta-group">
+        <a href="#projects" class="btn btn-primary">
+          <span>Explore Projects</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 3L9 4l6 6H3v2h12l-6 6 1 1 8-8-8-8z"/>
+          </svg>
+        </a>
+        <a href="https://github.com/locvel" class="btn btn-secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          <span>View on GitHub</span>
+        </a>
+      </div>
+    </div>
+    
+    <div class="scroll-indicator">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 16l-6-6h12z"/>
+      </svg>
+    </div>
+  </section>
 
-  <div class="card voite">
-    <h3><a href="https://github.com/locvel/voite">Voite</a></h3>
-    <p>Private, offline voice recorder and diary with on-device transcription. Free, no account, no server.</p>
-    <p><a href="https://github.com/locvel/voite/releases/latest">Download the latest release</a> &middot; <a href="https://youtu.be/El_ou_v5tWA">Watch the tutorial</a> &middot; <a href="https://locvel.github.io/voite/">Docs &amp; privacy policy</a></p>
-  </div>
+  <!-- Projects Section -->
+  <section id="projects" class="section">
+    <div class="container">
+      <h2 class="section-title fade-in">Our Projects</h2>
+      
+      <div class="projects-grid">
+        <div class="project-card fade-in">
+          <div class="project-icon">🎙️</div>
+          <h3>Voite</h3>
+          <p>Private, offline voice recorder and diary with on-device transcription. Free, no account, no server. Your voice notes stay on your device, encrypted and secure.</p>
+          <div class="project-links">
+            <a href="https://github.com/locvel/voite" class="project-link">
+              <span>View Code</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0L7 1l4 4H2v2h9L7 11l1 1 6-6z"/>
+              </svg>
+            </a>
+            <a href="https://github.com/locvel/voite/releases/latest" class="project-link">
+              <span>Download</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 12L3 7h3V2h4v5h3z M2 14h12v2H2z"/>
+              </svg>
+            </a>
+            <a href="https://locvel.github.io/voite/" class="project-link">
+              <span>Documentation</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M4 2h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2zm0 2v8h8V4H4zm2 2h4v1H6V6zm0 2h4v1H6V8z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
 
-  <div class="card">
-    <h3><a href="https://github.com/locvel/.github">.github</a></h3>
-    <p>The org's shared rules: code of conduct, security policy, contributing guide, AI policy, and governance.</p>
-  </div>
+        <div class="project-card fade-in">
+          <div class="project-icon">📋</div>
+          <h3>.github</h3>
+          <p>Organization-wide community health files and governance policies. Code of conduct, security guidelines, contributing guide, and AI policy for all Locvel projects.</p>
+          <div class="project-links">
+            <a href="https://github.com/locvel/.github" class="project-link">
+              <span>View Policies</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0L7 1l4 4H2v2h9L7 11l1 1 6-6z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
 
-  <h2>Contribute</h2>
+      <div class="stats">
+        <div class="stat-card fade-in">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Open Source</div>
+        </div>
+        <div class="stat-card fade-in">
+          <div class="stat-number">0</div>
+          <div class="stat-label">Data Collected</div>
+        </div>
+        <div class="stat-card fade-in">
+          <div class="stat-number">Local</div>
+          <div class="stat-label">Data Storage</div>
+        </div>
+        <div class="stat-card fade-in">
+          <div class="stat-number">MIT</div>
+          <div class="stat-label">License</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <p>New here? Start with the <a href="https://github.com/locvel/.github/blob/main/.github/CONTRIBUTING.md">contributing guide</a> and the <a href="https://github.com/locvel/voite/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">good first issues</a>. Small fixes go straight to a pull request; bigger changes need an issue first. All contributions need a <code>Signed-off-by:</code> line (DCO). AI may assist, but you must understand and explain every change — see the <a href="https://github.com/locvel/.github/blob/main/.github/AI_POLICY.md">AI policy</a>.</p>
+  <!-- Values Section -->
+  <section class="section" style="background: rgba(255, 255, 255, 0.01);">
+    <div class="container">
+      <h2 class="section-title fade-in">Our Values</h2>
+      
+      <div class="features-grid">
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🔒</div>
+          <h3>Privacy First</h3>
+          <p>Your data never leaves your device. No accounts, no servers, no tracking. What you create stays yours.</p>
+        </div>
 
-  <h2>Where to ask</h2>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📱</div>
+          <h3>Local First</h3>
+          <p>Full functionality offline. Your apps work without internet, without permissions, without compromises.</p>
+        </div>
 
-  <table>
-    <tr><td>Report a bug</td><td><a href="https://github.com/locvel/voite/issues">Voite issues</a></td></tr>
-    <tr><td>Ask a question / share an idea</td><td><a href="https://github.com/locvel/voite/discussions">Voite Discussions</a></td></tr>
-    <tr><td>Report a security problem</td><td>Privately — see <a href="https://github.com/locvel/.github/blob/main/.github/SECURITY.md">SECURITY.md</a>, never a public issue</td></tr>
-    <tr><td>Anything private</td><td><a href="mailto:hello.locvel@gmail.com">hello.locvel@gmail.com</a></td></tr>
-  </table>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🌐</div>
+          <h3>Open Source</h3>
+          <p>Transparent, auditable, community-driven. Every line of code is public and free to inspect.</p>
+        </div>
 
-  <h2>Links</h2>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🛡️</div>
+          <h3>Security</h3>
+          <p>End-to-end encryption, secure storage, minimal permissions. Security is built in, not bolted on.</p>
+        </div>
 
-  <p>
-    <a href="https://www.youtube.com/@locvelhq">YouTube</a> &middot;
-    <a href="https://x.com/locvelhq">X</a>
-  </p>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">⚡</div>
+          <h3>Performance</h3>
+          <p>Fast, efficient, lightweight. On-device processing means instant results with zero latency.</p>
+        </div>
 
+        <div class="feature-card fade-in">
+          <div class="feature-icon">💚</div>
+          <h3>Sustainable</h3>
+          <p>Free forever. No subscriptions, no ads, no data mining. Just tools that respect you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section">
+    <div class="container" style="text-align: center;">
+      <h2 class="section-title fade-in">Join the Movement</h2>
+      <p class="tagline fade-in" style="max-width: 600px; margin: 0 auto 3rem;">
+        We're building software that puts people first. Contribute code, report bugs, or spread the word.
+      </p>
+      <div class="cta-group fade-in">
+        <a href="https://github.com/locvel/.github/blob/main/.github/CONTRIBUTING.md" class="btn btn-primary">
+          <span>Start Contributing</span>
+        </a>
+        <a href="https://github.com/locvel/voite/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22" class="btn btn-secondary">
+          <span>Good First Issues</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
   <footer>
-    <p>Locvel — founded November 2026. Contact: <a href="mailto:hello.locvel@gmail.com">hello.locvel@gmail.com</a> &middot; <a href="https://github.com/locvel">GitHub</a></p>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>Locvel</h4>
+        <p style="color: var(--text-dim); line-height: 1.7;">
+          Building open source, privacy-first, local-first software since November 2026.
+        </p>
+        <div class="social-links">
+          <a href="https://github.com/locvel" class="social-link" title="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+          <a href="https://www.youtube.com/@locvelhq" class="social-link" title="YouTube">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+          </a>
+          <a href="https://x.com/locvelhq" class="social-link" title="X (Twitter)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-section">
+        <h4>Projects</h4>
+        <div class="footer-links">
+          <a href="https://github.com/locvel/voite">
+            <span>→</span>
+            <span>Voite</span>
+          </a>
+          <a href="https://github.com/locvel/.github">
+            <span>→</span>
+            <span>.github</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-section">
+        <h4>Resources</h4>
+        <div class="footer-links">
+          <a href="https://github.com/locvel/.github/blob/main/.github/CONTRIBUTING.md">
+            <span>→</span>
+            <span>Contributing Guide</span>
+          </a>
+          <a href="https://github.com/locvel/.github/blob/main/.github/CODE_OF_CONDUCT.md">
+            <span>→</span>
+            <span>Code of Conduct</span>
+          </a>
+          <a href="https://github.com/locvel/.github/blob/main/.github/SECURITY.md">
+            <span>→</span>
+            <span>Security Policy</span>
+          </a>
+          <a href="https://github.com/locvel/.github/blob/main/.github/AI_POLICY.md">
+            <span>→</span>
+            <span>AI Policy</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-section">
+        <h4>Connect</h4>
+        <div class="footer-links">
+          <a href="mailto:hello.locvel@gmail.com">
+            <span>→</span>
+            <span>hello.locvel@gmail.com</span>
+          </a>
+          <a href="https://github.com/locvel/voite/discussions">
+            <span>→</span>
+            <span>Discussions</span>
+          </a>
+          <a href="https://github.com/locvel/voite/issues">
+            <span>→</span>
+            <span>Report a Bug</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>&copy; 2026 Locvel. Licensed under MIT. Built with care for privacy and freedom.</p>
+    </div>
   </footer>
 
-</main>
+  <script>
+    // Intersection Observer for fade-in animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, index * 100);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach((el) => {
+      observer.observe(el);
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Haptic feedback simulation (vibration API)
+    if ('vibrate' in navigator) {
+      document.querySelectorAll('.btn, .project-card, .feature-card').forEach(el => {
+        el.addEventListener('click', () => {
+          navigator.vibrate(10);
+        });
+      });
+    }
+
+    // Parallax effect on hero background
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const hero = document.querySelector('.hero-bg');
+      if (hero && scrolled < window.innerHeight) {
+        hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+      }
+    });
+
+    // Counter animation for stats
+    const animateValue = (element, start, end, duration) => {
+      const range = end - start;
+      const increment = range / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+          clearInterval(timer);
+          current = end;
+        }
+        if (typeof end === 'number') {
+          element.textContent = Math.floor(current);
+        } else {
+          element.textContent = end;
+        }
+      }, 16);
+    };
+
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const number = entry.target.querySelector('.stat-number');
+          const text = number.textContent;
+          if (text === '100%') {
+            animateValue(number, 0, 100, 1000);
+            setTimeout(() => { number.textContent = '100%'; }, 1000);
+          }
+        }
+      });
+    });
+
+    document.querySelectorAll('.stat-card').forEach(card => {
+      statsObserver.observe(card);
+    });
+  </script>
+
 </body>
 </html>
